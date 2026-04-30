@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbalife - Automatisation Superviseur</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- ========== SIDEBAR ========== -->
+    <div class="sidebar">
+        <div class="logo">
+            <h1>🌿 HERBALIFE</h1>
+            <p>Automatisation Superviseur</p>
+        </div>
+
+        <div class="menu">
+            <button class="menu-btn active" onclick="showSection('dashboard')">
+                📊 Dashboard
+            </button>
+            <button class="menu-btn" onclick="showSection('team')">
+                👥 Mon Équipe
+            </button>
+            <button class="menu-btn" onclick="showSection('supervisors')">
+                🤝 Superviseurs
+            </button>
+            <button class="menu-btn" onclick="showSection('sales')">
+                💰 Ventes
+            </button>
+            <button class="menu-btn" onclick="showSection('routines')">
+                ⏰ Routines
+            </button>
+            <button class="menu-btn" onclick="showSection('reports')">
+                📈 Rapports
+            </button>
+            <button class="menu-btn" onclick="showSection('notifications')">
+                🔔 Notifications
+            </button>
+            <button class="menu-btn" onclick="showSection('settings')">
+                ⚙️  Paramètres
+            </button>
+        </div>
+
+        <div class="user-info">
+            <div class="avatar">👩‍💼</div>
+            <div>
+                <div class="user-name">Marie Dupont</div>
+                <div class="user-role">Superviseur Principal</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-content">
+        <!-- ========== HEADER ========== -->
+        <div class="header">
+            <div class="header-left">
+                <h2 id="section-title">Dashboard</h2>
+                <p id="section-subtitle">Vue d'ensemble de votre activité</p>
+            </div>
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Rechercher..." id="search-input">
+                    <button onclick="search()">🔍</button>
+                </div>
+                <button class="btn-sync" onclick="syncData()">🔄 Sync</button>
+                <button class="btn-alert" id="notifications-badge">🔔 0</button>
+            </div>
+        </div>
+
+        <!-- ========== CONTENT ========== -->
+        <div class="content">
+
+            <!-- ========== SECTION 1: DASHBOARD ========== -->
+            <div id="dashboard" class="section active">
+                <div class="grid-2">
+                    <!-- Ventes Jour -->
+                    <div class="card card-stat">
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">💰 Ventes Aujourd'hui</p>
+                        <div class="stat-value" id="sales-today">0€</div>
+                        <div class="stat-change">+12% vs hier</div>
+                    </div>
+
+                    <!-- Ventes Mois -->
+                    <div class="card card-stat">
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">📊 Ventes Ce Mois</p>
+                        <div class="stat-value" id="sales-month">0€</div>
+                        <div class="stat-change">+8% vs mois passé</div>
+                    </div>
+
+                    <!-- Équipe Active -->
+                    <div class="card card-stat">
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">✅ Superviseurs Actifs</p>
+                        <div class="stat-value" id="active-supervisors">0</div>
+                        <div class="stat-change">4 superviseurs opérationnels</div>
+                    </div>
+
+                    <!-- Performance -->
+                    <div class="card card-stat">
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">🎯 Performance</p>
+                        <div class="stat-value" id="performance">85%</div>
+                        <div class="stat-change">Objectif à 85%</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <!-- Graphique Ventes 7 Jours -->
+                    <div class="card">
+                        <h3>📈 Ventes des 7 Derniers Jours</h3>
+                        <div class="chart">
+                            <div style="text-align: center; width: 100%; color: var(--text-secondary);">
+                                <p>Lun 500€ | Mar 650€ | Mer 600€ | Jeu 750€</p>
+                                <p>Ven 820€ | Sam 700€ | Dim 900€</p>
+                                <p style="font-weight: bold; margin-top: 10px; color: var(--primary);">Total: 5320€</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distribution Actif/Inactif -->
+                    <div class="card">
+                        <h3>📊 Distribution Équipe</h3>
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 30px;">
+                            <div style="text-align: center;">
+                                <div class="pie-chart" style="background: conic-gradient(var(--primary) 0% 57%, var(--warning) 57% 100%); width: 120px; height: 120px; margin: 0 auto;">
+                                    <span style="font-size: 12px;">57%</span>
+                                </div>
+                                <p style="margin-top: 10px; font-size: 12px;">Actifs: 4</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <p style="font-size: 14px; color: var(--primary);">✅ 4 Actifs</p>
+                                <p style="font-size: 14px; color: var(--warning);">⏸️  3 Inactifs</p>
+                                <p style="font-size: 14px; color: var(--info); margin-top: 10px;">📊 Total: 7</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activités Récentes -->
+                <div class="card">
+                    <h3>📱 Activités Récentes</h3>
+                    <div class="activity-list" id="recent-activities">
+                        <div class="activity-item">
+                            <div class="activity-icon">💰</div>
+                            <div class="activity-text">Vente de 500€ enregistrée par Marie Dupont</div>
+                            <div class="activity-time">Aujourd'hui 10:30</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">👤</div>
+                            <div class="activity-text">Jean Martin a réactivé son compte</div>
+                            <div class="activity-time">Hier 15:45</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">⚙️</div>
+                            <div class="activity-text">Routine de vérification d'activité exécutée</div>
+                            <div class="activity-time">Hier 08:00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION 2: TEAM ========== -->
+            <div id="team" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>👥 Distributeurs</h3>
+                        <button class="btn btn-primary" onclick="addDistributor()">+ Ajouter</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Superviseur</th>
+                                    <th>Ventes Jour</th>
+                                    <th>Ventes Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="team-list">
+                                <tr>
+                                    <td>Alice Moreau</td>
+                                    <td>alice@email.com</td>
+                                    <td>Jean Martin</td>
+                                    <td>150€</td>
+                                    <td>2500€</td>
+                                    <td>
+                                        <button class="btn btn-small btn-secondary">Voir</button>
+                                        <button class="btn btn-small btn-danger">Suppr.</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Bob Petit</td>
+                                    <td>bob@email.com</td>
+                                    <td>Jean Martin</td>
+                                    <td>200€</td>
+                                    <td>3200€</td>
+                                    <td>
+                                        <button class="btn btn-small btn-secondary">Voir</button>
+                                        <button class="btn btn-small btn-danger">Suppr.</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Claire Durand</td>
+                                    <td>claire@email.com</td>
+                                    <td>Sophie Bernard</td>
+                                    <td>180€</td>
+                                    <td>2800€</td>
+                                    <td>
+                                        <button class="btn btn-small btn-secondary">Voir</button>
+                                        <button class="btn btn-small btn-danger">Suppr.</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION 3: SUPERVISORS ========== -->
+            <div id="supervisors" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🤝 Superviseurs Actifs</h3>
+                        <button class="btn btn-primary" onclick="addSupervisor()">+ Ajouter</button>
+                    </div>
+
+                    <div class="supervisor-list" id="active-supervisors-list">
+                        <div class="supervisor-card">
+                            <div class="supervisor-header">
+                                <h4>👨‍💼 Jean Martin</h4>
+                                <span class="badge badge-success">Actif</span>
+                            </div>
+                            <p>📧 jean@herbalife.com</p>
+                            <p>👥 2 distributeurs</p>
+                            <p>💰 Ventes: 320€ (Jour) | 4500€ (Total)</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 65%;"></div>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-small btn-secondary">Éditer</button>
+                                <button class="btn btn-small btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+
+                        <div class="supervisor-card">
+                            <div class="supervisor-header">
+                                <h4>👩‍💼 Sophie Bernard</h4>
+                                <span class="badge badge-success">Actif</span>
+                            </div>
+                            <p>📧 sophie@herbalife.com</p>
+                            <p>👥 1 distributeur</p>
+                            <p>💰 Ventes: 450€ (Jour) | 5800€ (Total)</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 90%;"></div>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-small btn-secondary">Éditer</button>
+                                <button class="btn btn-small btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+
+                        <div class="supervisor-card">
+                            <div class="supervisor-header">
+                                <h4>🧑‍💼 Pierre Leclerc</h4>
+                                <span class="badge badge-success">Actif</span>
+                            </div>
+                            <p>📧 pierre@herbalife.com</p>
+                            <p>👥 3 distributeurs</p>
+                            <p>💰 Ventes: 600€ (Jour) | 6200€ (Total)</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 75%;"></div>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-small btn-secondary">Éditer</button>
+                                <button class="btn btn-small btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+
+                        <div class="supervisor-card">
+                            <div class="supervisor-header">
+                                <h4>👩‍💼 Isabelle Fontaine</h4>
+                                <span class="badge badge-success">Actif</span>
+                            </div>
+                            <p>📧 isabelle@herbalife.com</p>
+                            <p>👥 0 distributeur</p>
+                            <p>💰 Ventes: 200€ (Jour) | 3500€ (Total)</p>
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 40%;"></div>
+                            </div>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-small btn-secondary">Éditer</button>
+                                <button class="btn btn-small btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 30px;">
+                    <div class="card-header">
+                        <h3>⏸️  Superviseurs Inactifs</h3>
+                    </div>
+
+                    <div class="supervisor-list" id="inactive-supervisors-list">
+                        <div class="supervisor-card inactive">
+                            <div class="supervisor-header">
+                                <h4>🧑‍💼 Thomas Henry</h4>
+                                <span class="badge badge-warning">Inactif</span>
+                            </div>
+                            <p>📧 thomas@herbalife.com</p>
+                            <p>👥 0 distributeur</p>
+                            <p>💰 Dernière activité: Il y a 30 jours</p>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-small btn-primary" onclick="reactivateSupervisor('Thomas Henry')">Réactiver</button>
+                                <button class="btn btn-small btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+
+                        <div class="supervisor-card inactive">
+                            <div class="supervisor-header">
+                                <h4>👩‍💼 Nathalie Girard</h4>
+                                <span class="badge badge-warning">Inactif</span>
+                            </div>
+                            <p>📧 nathalie@herbalife.com</p>
+                            <p>👥 0 distributeur</p>
+                            <p>💰 Dernière activité: Il y a 45 jours</p>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-small btn-primary" onclick="reactivateSupervisor('Nathalie Girard')">Réactiver</button>
+                                <button class="btn btn-small btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+
+                        <div class="supervisor-card inactive">
+                            <div class="supervisor-header">
+                                <h4>🧑‍💼 Michel Rousseau</h4>
+                                <span class="badge badge-warning">Inactif</span>
+                            </div>
+                            <p>📧 michel@herbalife.com</p>
+                            <p>👥 0 distributeur</p>
+                            <p>💰 Dernière activité: Il y a 60 jours</p>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-small btn-primary" onclick="reactivateSupervisor('Michel Rousseau')">Réactiver</button>
+                                <button class="btn btn-small btn-danger">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION 4: SALES ========== -->
+            <div id="sales" class="section">
+                <div class="grid-2">
+                    <!-- Formulaire -->
+                    <div class="card">
+                        <h3>💰 Enregistrer une Vente</h3>
+                        <form class="form" onsubmit="recordSale(event)">
+                            <div class="form-group">
+                                <label>Vendeur</label>
+                                <select required>
+                                    <option value="">Sélectionner un vendeur</option>
+                                    <option value="Marie Dupont">Marie Dupont (Principal)</option>
+                                    <option value="Jean Martin">Jean Martin</option>
+                                    <option value="Sophie Bernard">Sophie Bernard</option>
+                                    <option value="Pierre Leclerc">Pierre Leclerc</option>
+                                    <option value="Isabelle Fontaine">Isabelle Fontaine</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Montant (€)</label>
+                                <input type="number" placeholder="Ex: 500" min="0" step="10" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Produit</label>
+                                <select required>
+                                    <option value="">Sélectionner un produit</option>
+                                    <option value="Nutrition">Pack Nutrition</option>
+                                    <option value="Complément">Complément Alimentaire</option>
+                                    <option value="Beauté">Produit Beauté</option>
+                                    <option value="Bien-être">Bien-être</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea placeholder="Détails supplémentaires..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                                ✅ Enregistrer la Vente
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Statistiques -->
+                    <div class="card">
+                        <h3>📊 Statistiques des Ventes</h3>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <span class="stat-label">Total Jour</span>
+                                <span class="stat-number" id="total-sales-today">2070€</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Moyenne</span>
+                                <span class="stat-number">414€</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Max</span>
+                                <span class="stat-number">600€</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Min</span>
+                                <span class="stat-number">200€</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Historique -->
+                <div class="card">
+                    <h3>📜 Historique des Ventes</h3>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date/Heure</th>
+                                    <th>Vendeur</th>
+                                    <th>Produit</th>
+                                    <th>Montant</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sales-history">
+                                <tr>
+                                    <td>Aujourd'hui 14:30</td>
+                                    <td>Marie Dupont</td>
+                                    <td>Pack Nutrition</td>
+                                    <td>500€</td>
+                                    <td><span class="badge badge-success">Validée</span></td>
+                                    <td>
+                                        <button class="btn btn-small btn-secondary">Détail</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Aujourd'hui 13:15</td>
+                                    <td>Jean Martin</td>
+                                    <td>Complément Alimentaire</td>
+                                    <td>320€</td>
+                                    <td><span class="badge badge-success">Validée</span></td>
+                                    <td>
+                                        <button class="btn btn-small btn-secondary">Détail</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Aujourd'hui 12:00</td>
+                                    <td>Sophie Bernard</td>
+                                    <td>Produit Beauté</td>
+                                    <td>450€</td>
+                                    <td><span class="badge badge-success">Validée</span></td>
+                                    <td>
+                                        <button class="btn btn-small btn-secondary">Détail</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION 5: ROUTINES ========== -->
+            <div id="routines" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>⏰ Routines Automatiques</h3>
+                        <button class="btn btn-primary" onclick="executeAllRoutines()">▶️ Exécuter Toutes</button>
+                    </div>
+
+                    <div id="routines-list">
+                        <div class="routine-card">
+                            <div class="routine-header">
+                                <h4>📱 Vérifier Activité</h4>
+                                <div class="routine-status">
+                                    <span class="badge badge-info">Quotidienne</span>
+                                    <span class="routine-time">08:00</span>
+                                </div>
+                            </div>
+                            <p class="routine-description">Vérifier l'activité de tous les superviseurs et alerter les inactifs.</p>
+                            <div class="routine-actions">
+                                <button class="btn btn-small btn-primary" onclick="executeRoutine('verify-activity')">
+                                    ▶️ Exécuter
+                                </button>
+                                <button class="btn btn-small btn-secondary" onclick="viewRoutineLogs('verify-activity')">
+                                    📋 Logs
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="routine-card">
+                            <div class="routine-header">
+                                <h4>💰 Rapport de Ventes</h4>
+                                <div class="routine-status">
+                                    <span class="badge badge-info">Quotidienne</span>
+                                    <span class="routine-time">18:00</span>
+                                </div>
+                            </div>
+                            <p class="routine-description">Générer un rapport complet des ventes du jour et sauvegarder les données.</p>
+                            <div class="routine-actions">
+                                <button class="btn btn-small btn-primary" onclick="executeRoutine('sales-report')">
+                                    ▶️ Exécuter
+                                </button>
+                                <button class="btn btn-small btn-secondary" onclick="viewRoutineLogs('sales-report')">
+                                    📋 Logs
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="routine-card">
+                            <div class="routine-header">
+                                <h4>✉️  Rappels de Tâches</h4>
+                                <div class="routine-status">
+                                    <span class="badge badge-info">Quotidienne</span>
+                                    <span class="routine-time">09:00</span>
+                                </div>
+                            </div>
+                            <p class="routine-description">Envoyer des rappels de tâches à tous les superviseurs actifs.</p>
+                            <div class="routine-actions">
+                                <button class="btn btn-small btn-primary" onclick="executeRoutine('send-reminders')">
+                                    ▶️ Exécuter
+                                </button>
+                                <button class="btn btn-small btn-secondary" onclick="viewRoutineLogs('send-reminders')">
+                                    📋 Logs
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="routine-card">
+                            <div class="routine-header">
+                                <h4>🔄 Réinitialiser Compteurs</h4>
+                                <div class="routine-status">
+                                    <span class="badge badge-info">Quotidienne</span>
+                                    <span class="routine-time">23:59</span>
+                                </div>
+                            </div>
+                            <p class="routine-description">Réinitialiser les compteurs de ventes du jour précédent.</p>
+                            <div class="routine-actions">
+                                <button class="btn btn-small btn-primary" onclick="executeRoutine('reset-counters')">
+                                    ▶️ Exécuter
+                                </button>
+                                <button class="btn btn-small btn-secondary" onclick="viewRoutineLogs('reset-counters')">
+                                    📋 Logs
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="routine-card">
+                            <div class="routine-header">
+                                <h4>🔔 Activer Inactifs</h4>
+                                <div class="routine-status">
+                                    <span class="badge badge-info">Quotidienne</span>
+                                    <span class="routine-time">20:00</span>
+                                </div>
+                            </div>
+                            <p class="routine-description">Envoyer des notifications de réactivation aux superviseurs inactifs.</p>
+                            <div class="routine-actions">
+                                <button class="btn btn-small btn-primary" onclick="executeRoutine('activate-inactive')">
+                                    ▶️ Exécuter
+                                </button>
+                                <button class="btn btn-small btn-secondary" onclick="viewRoutineLogs('activate-inactive')">
+                                    📋 Logs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs d'Exécution -->
+                <div class="card" style="margin-top: 30px;">
+                    <h3>📝 Logs d'Exécution</h3>
+                    <div id="execution-logs" style="background: var(--gray-1); padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; color: var(--text-secondary);">
+                        <p>[08:00] ✅ Vérification d'activité exécutée - 4 actifs, 3 inactifs</p>
+                        <p>[09:00] ✅ Rappels de tâches envoyés à 4 superviseurs</p>
+                        <p>[12:30] 💰 Vente enregistrée: 500€ - Marie Dupont</p>
+                        <p>[13:15] 💰 Vente enregistrée: 320€ - Jean Martin</p>
+                        <p>[14:45] ⚙️ Synchronisation des données complétée</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION 6: REPORTS ========== -->
+            <div id="reports" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📊 Rapports</h3>
+                        <div class="reports-filters">
+                            <select id="period-filter">
+                                <option value="day">Jour</option>
+                                <option value="week">Semaine</option>
+                                <option value="month" selected>Mois</option>
+                                <option value="year">Année</option>
+                            </select>
+                            <button class="btn btn-primary" onclick="generateReport()">
+                                📄 Générer Rapport
+                            </button>
+                            <button class="btn btn-secondary" onclick="exportPDF()">
+                                📥 Export PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <h4 style="margin-bottom: 15px;">🏆 Top 5 Vendeurs</h4>
+                        <ol class="ranking-list">
+                            <li>
+                                <span class="rank">🥇</span>
+                                <span class="name">Pierre Leclerc</span>
+                                <span class="value">6200€</span>
+                            </li>
+                            <li>
+                                <span class="rank">🥈</span>
+                                <span class="name">Sophie Bernard</span>
+                                <span class="value">5800€</span>
+                            </li>
+                            <li>
+                                <span class="rank">🥉</span>
+                                <span class="name">Jean Martin</span>
+                                <span class="value">4500€</span>
+                            </li>
+                            <li>
+                                <span class="rank">4️⃣</span>
+                                <span class="name">Marie Dupont</span>
+                                <span class="value">3500€</span>
+                            </li>
+                            <li>
+                                <span class="rank">5️⃣</span>
+                                <span class="name">Isabelle Fontaine</span>
+                                <span class="value">3200€</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4 style="margin-bottom: 15px;">📈 Statistiques Détaillées</h4>
+                    <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="stat-box">
+                            <span class="stat-label">Ventes Totales</span>
+                            <span class="stat-number">23500€</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Nombre de Ventes</span>
+                            <span class="stat-number">47</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Vente Moyenne</span>
+                            <span class="stat-number">500€</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Croissance</span>
+                            <span class="stat-number">+12%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION 7: NOTIFICATIONS ========== -->
+            <div id="notifications" class="section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🔔 Notifications</h3>
+                        <button class="btn btn-secondary" onclick="clearNotifications()">
+                            🗑️  Supprimer Tout
+                        </button>
+                    </div>
+
+                    <div class="notifications-list" id="notifications-list">
+                        <div class="notification-item alert-success">
+                            <div class="notification-icon">✅</div>
+                            <div class="notification-content">
+                                <h4>Vente Enregistrée</h4>
+                                <p>Vente de 500€ enregistrée avec succès par Marie Dupont.</p>
+                                <span class="notification-time">Il y a 30 minutes</span>
+                            </div>
+                        </div>
+
+                        <div class="notification-item alert-info">
+                            <div class="notification-icon">ℹ️</div>
+                            <div class="notification-content">
+                                <h4>Routine Exécutée</h4>
+                                <p>La routine de vérification d'activité a été exécutée. 4 superviseurs actifs détectés.</p>
+                                <span class="notification-time">Il y a 2 heures</span>
+                            </div>
+                        </div>
+
+                        <div class="notification-item alert-warning">
+                            <div class="notification-icon">⚠️</div>
+                            <div class="notification-content">
+                                <h4>Alerte: Superviseur Inactif</h4>
+                                <p>Thomas Henry n'a pas d'activité depuis 30 jours. Envisager une réactivation.</p>
+                                <span class="notification-time">Hier à 20:00</span>
+                            </div>
+                        </div>
+
+                        <div class="notification-item alert-success">
+                            <div class="notification-icon">✅</div>
+                            <div class="notification-content">
+                                <h4>Superviseur Réactivé</h4>
+                                <p>Jean Martin a réactivé son compte et est maintenant disponible.</p>
+                                <span class="notification-time">Il y a 5 jours</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========== SECTION 8: SETTINGS ========== -->
+            <div id="settings" class="section">
+                <div class="card">
+                    <h3>👤 Profil Utilisateur</h3>
+                    <form class="form">
+                        <div class="form-group">
+                            <label>Nom Complet</label>
+                            <input type="text" value="Marie Dupont" placeholder="Nom complet">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" value="marie.dupont@herbalife.com" placeholder="Email">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Téléphone</label>
+                            <input type="tel" placeholder="Téléphone">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Localisation</label>
+                            <input type="text" placeholder="Ville, Région">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            💾 Sauvegarder les Modifications
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>🔔 Préférences de Notifications</h3>
+                    <div class="settings-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Notifications de ventes</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Rappels de tâches quotidiennes</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Alertes d'activité d'équipe</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox">
+                            <span>Email hebdomadaire</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Notifications de réactivation</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔐 Sécurité</h3>
+                    <div class="settings-group">
+                        <button class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                            🔑 Changer le Mot de Passe
+                        </button>
+                        <button class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                            📱 Activer 2FA
+                        </button>
+                        <button class="btn btn-danger" style="width: 100%; justify-content: center;">
+                            🚪 Déconnexion
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ========== MODALS ========== -->
+    <div id="addSupervisorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>➕ Ajouter un Superviseur</h2>
+                <button class="modal-close" onclick="closeModal('addSupervisorModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form class="form" onsubmit="submitAddSupervisor(event)">
+                    <div class="form-group">
+                        <label>Nom</label>
+                        <input type="text" placeholder="Nom du superviseur" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Statut</label>
+                        <select required>
+                            <option value="actif">Actif</option>
+                            <option value="inactif">Inactif</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addSupervisorModal')">
+                    Annuler
+                </button>
+                <button class="btn btn-primary" onclick="submitAddSupervisor()">
+                    Ajouter
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
